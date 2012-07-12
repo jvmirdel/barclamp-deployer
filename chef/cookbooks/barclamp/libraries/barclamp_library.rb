@@ -13,6 +13,8 @@
 # limitations under the License.
 #
 
+require 'chef'
+
 module BarclampLibrary
   class Barclamp
     class Inventory
@@ -180,6 +182,10 @@ module BarclampLibrary
         
       def self.lookup_interface_info(node, conduit, intf_to_if_map = nil)
         intf_to_if_map = Barclamp::Inventory.build_node_map(node) if intf_to_if_map.nil?
+
+# we have a problem with mixed mode for eth2 and the intfmap endsup as zero
+        Chef::Log.warn("Forcing intf1 if_list to eth2 from #{intf_to_if_map["intf1"]["if_list"]}")
+        intf_to_if_map["intf1"]["if_list"] = [ "eth2" ]
 
         return [nil, nil] if intf_to_if_map[conduit].nil?
 
